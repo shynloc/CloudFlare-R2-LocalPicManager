@@ -1,4 +1,4 @@
-# PicBed — 自建图床（Cloudflare R2 + Worker）
+# CloudFlare-R2-LocalPicManager — 自建图床（Cloudflare R2 + Worker）
 
 基于 Cloudflare R2 对象存储 + Cloudflare Worker 的免费自建图床方案，附带单文件 HTML 管理界面和 AI Agent 集成支持。
 
