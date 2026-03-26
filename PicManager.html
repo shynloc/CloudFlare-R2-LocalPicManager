@@ -124,7 +124,8 @@ input, select { font-family: inherit; font-size: inherit; }
 .tb-btn-primary {
   background: var(--accent); color: #fff; padding: 0 14px; height: 32px;
   border-radius: var(--radius); display: flex; align-items: center; gap: 6px;
-  font-weight: 500; transition: background var(--transition);
+  font-weight: 500; transition: background var(--transition); font-size: 11px;
+  width: 70px; justify-content: center; white-space: nowrap;
 }
 .tb-btn-primary:hover { background: var(--accent-hover); }
 .tb-btn-danger {
@@ -1018,7 +1019,7 @@ function renderGrid() {
   if (!q) {
     folderHtml = currentFolders.map(folder => {
       const name = folder.slice(currentPath.length).replace(/\/$/, '');
-      const fileCount = allImages.filter(img => img.key.startsWith(folder)).length;
+      const fileCount = allImages.filter(img => img.key.startsWith(folder) && !img.key.endsWith('.folder')).length;
       return `<div class="folder-card" ondblclick="navigateTo('${escapeJs(folder)}')" onclick="navigateTo('${escapeJs(folder)}')" oncontextmenu="showFolderContextMenu(event, '${escapeJs(folder)}')">
         <div class="folder-actions">
           <button class="quick-action-btn" onclick="event.stopPropagation();showRenameFolderDialog('${escapeJs(folder)}')" title="重命名文件夹">
@@ -1831,12 +1832,13 @@ function toast(msg, type = 'info') {
 
 // ===== Stats =====
 function updateStats() {
-  document.getElementById('stat-count').textContent = allImages.length;
-  const totalSize = allImages.reduce((sum, img) => sum + (img.size || 0), 0);
+  const realImages = allImages.filter(img => !img.key.endsWith('.folder'));
+  document.getElementById('stat-count').textContent = realImages.length;
+  const totalSize = realImages.reduce((sum, img) => sum + (img.size || 0), 0);
   document.getElementById('stat-size').textContent = formatSize(totalSize);
-  document.getElementById('stat-avg').textContent = allImages.length ? formatSize(Math.round(totalSize / allImages.length)) : '—';
+  document.getElementById('stat-avg').textContent = realImages.length ? formatSize(Math.round(totalSize / realImages.length)) : '—';
   const folderInfo = currentPath ? ` (${currentPath.replace(/\/$/, '')})` : '';
-  document.getElementById('status-total').textContent = `当前 ${filteredImages.length} 个文件${folderInfo} · 总计 ${allImages.length} 个`;
+  document.getElementById('status-total').textContent = `当前 ${filteredImages.length} 个文件${folderInfo} · 总计 ${realImages.length} 个`;
 
   const c = getConfig();
   const domain = c.customDomain || c.workerUrl;
